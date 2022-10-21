@@ -1,0 +1,245 @@
+{
+    "sportType": {
+        "sportTypeId": 4,
+        "sportTypeKey": "swimming"
+    },
+    "workoutName": "TestSwim",
+    "workoutSegments": [
+        {
+            "segmentOrder": 1,
+            "sportType": {
+                "sportTypeId": 4,
+                "sportTypeKey": "swimming"
+            },
+            "workoutSteps": [
+                {
+                    "stepId": 1,
+                    "childStepId": null,
+                    "type": "ExecutableStepDTO",
+                    "stepOrder": 1,
+                    "stepType": {
+                        "stepTypeId": 1,
+                        "stepTypeKey": "warmup"
+                    },
+                    "endCondition": {
+                        "conditionTypeKey": "distance",
+                        "conditionTypeId": 3
+                    },
+                    "preferredEndConditionUnit": {
+                        "unitKey": "meter"
+                    },
+                    "endConditionValue": 200,
+                    "endConditionCompare": null,
+                    "endConditionZone": null,
+                    "strokeType": {
+                        "strokeTypeId": 1,
+                        "strokeTypeKey": "any_stroke"
+                    },
+                    "equipmentType": {
+                        "equipmentTypeId": null,
+                        "equipmentTypeKey": null
+                    },
+                    "exerciseName": null
+                },
+                {
+                    "stepId": 2,
+                    "childStepId": null,
+                    "type": "ExecutableStepDTO",
+                    "stepOrder": 2,
+                    "stepType": {
+                        "stepTypeId": 5,
+                        "stepTypeKey": "rest"
+                    },
+                    "endCondition": {
+                        "conditionTypeKey": "lap.button",
+                        "conditionTypeId": 1
+                    },
+                    "preferredEndConditionUnit": null,
+                    "endConditionValue": null,
+                    "endConditionCompare": null,
+                    "endConditionZone": null,
+                    "exerciseName": null
+                },
+                {
+                    "stepId": null,
+                    "stepOrder": 3,
+                    "stepType": {
+                        "stepTypeId": 6,
+                        "stepTypeKey": "repeat"
+                    },
+                    "numberOfIterations": 8,
+                    "smartRepeat": false,
+                    "childStepId": 1,
+                    "workoutSteps": [
+                        {
+                            "type": "ExecutableStepDTO",
+                            "stepId": null,
+                            "stepOrder": 1,
+                            "childStepId": null,
+                            "description": "some note",
+                            "stepType": {
+                                "stepTypeId": 3,
+                                "stepTypeKey": "interval"
+                            },
+                            "endCondition": {
+                                "conditionTypeKey": "distance",
+                                "conditionTypeId": 3
+                            },
+                            "preferredEndConditionUnit": {
+                                "unitKey": "meter"
+                            },
+                            "endConditionValue": 50,
+                            "endConditionCompare": null,
+                            "endConditionZone": null,
+                            "strokeType": {
+                                "strokeTypeId": 4,
+                                "strokeTypeKey": "drill"
+                            },
+                            "equipmentType": {
+                                "equipmentTypeId": 3,
+                                "equipmentTypeKey": "paddles"
+                            },
+                            "exerciseName": null
+                        },
+                        {
+                            "type": "ExecutableStepDTO",
+                            "stepId": null,
+                            "stepOrder": 2,
+                            "childStepId": null,
+                            "description": null,
+                            "stepType": {
+                                "stepTypeId": 5,
+                                "stepTypeKey": "rest"
+                            },
+                            "endCondition": {
+                                "conditionTypeKey": "fixed.rest",
+                                "conditionTypeId": 8
+                            },
+                            "preferredEndConditionUnit": null,
+                            "endConditionValue": 15,
+                            "endConditionCompare": null,
+                            "endConditionZone": null,
+                            "exerciseName": null
+                        }
+                    ],
+                    "endConditionValue": 8,
+                    "type": "RepeatGroupDTO",
+                    "endCondition": {
+                        "conditionTypeKey": "iterations",
+                        "conditionTypeId": 7
+                    }
+                },
+                {
+                    "stepId": 3,
+                    "childStepId": null,
+                    "type": "ExecutableStepDTO",
+                    "stepOrder": 4,
+                    "stepType": {
+                        "stepTypeId": 5,
+                        "stepTypeKey": "rest"
+                    },
+                    "endCondition": {
+                        "conditionTypeKey": "lap.button",
+                        "conditionTypeId": 1
+                    },
+                    "preferredEndConditionUnit": null,
+                    "endConditionValue": null,
+                    "endConditionCompare": null,
+                    "endConditionZone": null,
+                    "exerciseName": null
+                },
+                {
+                    "stepId": 5,
+                    "childStepId": null,
+                    "type": "ExecutableStepDTO",
+                    "stepOrder": 5,
+                    "stepType": {
+                        "stepTypeId": 3,
+                        "stepTypeKey": "interval"
+                    },
+                    "endCondition": {
+                        "conditionTypeKey": "distance",
+                        "conditionTypeId": 3
+                    },
+                    "preferredEndConditionUnit": {
+                        "unitKey": "meter"
+                    },
+                    "endConditionValue": 300,
+                    "endConditionCompare": null,
+                    "endConditionZone": null,
+                    "strokeType": {
+                        "strokeTypeId": 6,
+                        "strokeTypeKey": "free"
+                    },
+                    "equipmentType": {
+                        "equipmentTypeId": null,
+                        "equipmentTypeKey": null
+                    },
+                    "exerciseName": null
+                },
+                {
+                    "stepId": 6,
+                    "childStepId": null,
+                    "type": "ExecutableStepDTO",
+                    "stepOrder": 6,
+                    "stepType": {
+                        "stepTypeId": 5,
+                        "stepTypeKey": "rest"
+                    },
+                    "endCondition": {
+                        "conditionTypeKey": "lap.button",
+                        "conditionTypeId": 1
+                    },
+                    "preferredEndConditionUnit": null,
+                    "endConditionValue": null,
+                    "endConditionCompare": null,
+                    "endConditionZone": null,
+                    "exerciseName": null
+                },
+                {
+                    "stepId": 4,
+                    "childStepId": null,
+                    "type": "ExecutableStepDTO",
+                    "stepOrder": 7,
+                    "stepType": {
+                        "stepTypeId": 2,
+                        "stepTypeKey": "cooldown"
+                    },
+                    "endCondition": {
+                        "conditionTypeKey": "distance",
+                        "conditionTypeId": 3
+                    },
+                    "preferredEndConditionUnit": {
+                        "unitKey": "meter"
+                    },
+                    "endConditionValue": 200,
+                    "endConditionCompare": null,
+                    "endConditionZone": null,
+                    "strokeType": {
+                        "strokeTypeId": 1,
+                        "strokeTypeKey": "any_stroke"
+                    },
+                    "equipmentType": {
+                        "equipmentTypeId": null,
+                        "equipmentTypeKey": null
+                    },
+                    "exerciseName": null
+                }
+            ]
+        }
+    ],
+    "poolLength": "25",
+    "poolLengthUnit": {
+        "unitKey": "meter"
+    },
+    "subSportType": null,
+    "avgTrainingSpeed": 0.8000518357207261,
+    "estimateType": null,
+    "estimatedDurationInSecs": null,
+    "estimatedDistanceInMeters": null,
+    "estimatedDistanceUnit": {
+        "unitId": null,
+        "unitKey": null,
+        "factor": null
+    }
+}
