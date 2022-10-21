@@ -3,6 +3,9 @@ defmodule GarminWorkoutBuilder do
   Documentation for GarminWorkoutBuilder.
   """
 
+  import GarminWorkoutBuilder.Constants
+  @constants constants()
+
   @doc """
   Hello world.
 
@@ -15,4 +18,6 @@ defmodule GarminWorkoutBuilder do
   def hello do
     :world
   end
+
+  def single_swim_repeat?(wo), do: wo |> String.match?(@constants.single_swim_repeat_regex)
 end
