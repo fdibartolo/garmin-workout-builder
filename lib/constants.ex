@@ -4,6 +4,7 @@ defmodule GarminWorkoutBuilder.Constants do
 
   def constants do
     %{
+      :swim_warmup_regex => ~r<\d+ e/c>,
       :single_swim_repeat_regex => ~r/\d+x\(\d+\s\[\d+''\]\)/
     }
   end
