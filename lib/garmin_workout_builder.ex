@@ -1,6 +1,6 @@
 defmodule GarminWorkoutBuilder do
   @moduledoc """
-  Documentation for GarminWorkoutBuilder.
+  Builds workouts for Garmin Connect portal
   """
 
   @doc """
