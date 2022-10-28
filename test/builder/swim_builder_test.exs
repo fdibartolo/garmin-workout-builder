@@ -44,5 +44,27 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
       assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "cooldown"
       assert steps |> List.first |> Map.fetch!(:strokeType) |> Map.fetch!(:strokeTypeKey) == "any_stroke"
       assert steps |> List.first |> Map.fetch!(:endConditionValue) == 200
-    end
+  end
+
+  test "should include interval step given distance details, free stroke by default", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "interval", endConditionValue: 500}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+      assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+      assert steps |> List.first |> Map.fetch!(:strokeType) |> Map.fetch!(:strokeTypeKey) == "free"
+      assert steps |> List.first |> Map.fetch!(:endConditionValue) == 500
+  end
+
+  test "should include interval step given paddle equipment details", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "interval", element: "MP"}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+      assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+      assert steps |> List.first |> Map.fetch!(:equipmentType) |> Map.fetch!(:equipmentTypeKey) == "paddles"
+  end
+
+  test "should include interval step given pullbuoy equipment details", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "interval", element: "PB"}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+      assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+      assert steps |> List.first |> Map.fetch!(:equipmentType) |> Map.fetch!(:equipmentTypeKey) == "pull_buoy"
+  end
 end
