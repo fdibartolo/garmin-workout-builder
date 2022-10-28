@@ -12,6 +12,14 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     end
   end
 
+  defp build_stroke_type_for("free"), do:
+    %GarminWorkoutBuilder.SwimModel.StrokeType{ strokeTypeId: @constants.swim_stroke_type_free_id, strokeTypeKey: @constants.swim_stroke_type_free_key}
+  defp build_stroke_type_for("drill"), do:
+    %GarminWorkoutBuilder.SwimModel.StrokeType{ strokeTypeId: @constants.swim_stroke_type_drill_id, strokeTypeKey: @constants.swim_stroke_type_drill_key}
+  defp build_stroke_type_for("any"), do:
+    %GarminWorkoutBuilder.SwimModel.StrokeType{ strokeTypeId: @constants.swim_stroke_type_any_id, strokeTypeKey: @constants.swim_stroke_type_any_key}
+  defp build_stroke_type_for(_), do: %GarminWorkoutBuilder.SwimModel.StrokeType{}
+
   defp build_step_for("warmup", data) do
     type = %GarminWorkoutBuilder.SwimModel.RegularStepType{
       stepTypeId: @constants.swim_step_type_warmup_id,
@@ -19,6 +27,7 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     }
     %GarminWorkoutBuilder.SwimModel.RegularWorkoutStep{
       stepType: type,
+      strokeType: build_stroke_type_for(data |> extract_field(:stroke)),
       endConditionValue: data |> extract_field(:endConditionValue),
       description: data |> extract_field(:description)
     }

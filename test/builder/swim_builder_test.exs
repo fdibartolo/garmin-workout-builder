@@ -19,10 +19,22 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
     assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "warmup"
   end
 
-  test "should include warmup step given details", context do
+  test "should include warmup step given distance details", context do
     steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "warmup", endConditionValue: 400, description: "easy"}]).workoutSegments
       |> List.first |> Map.fetch!(:workoutSteps)
     assert steps |> List.first |> Map.fetch!(:endConditionValue) == 400
     assert steps |> List.first |> Map.fetch!(:description) == "easy"
+  end
+
+  test "should include warmup step given free stroke details", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "warmup", stroke: "free"}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+    assert steps |> List.first |> Map.fetch!(:strokeType) |> Map.fetch!(:strokeTypeKey) == "free"
+  end
+
+  test "should include warmup step given drill stroke details", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "warmup", stroke: "drill"}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+    assert steps |> List.first |> Map.fetch!(:strokeType) |> Map.fetch!(:strokeTypeId) == 4
   end
 end
