@@ -83,7 +83,7 @@ end
 
 defmodule GarminWorkoutBuilder.SwimModel.RepeatWorkoutStep do
   defstruct [
-    :stepId,
+    :stepId, # always null
     :childStepId,
     :stepOrder,
     :endConditionValue,
