@@ -22,8 +22,16 @@ defmodule GarminWorkoutBuilder.Constants do
       :swim_stroke_type_drill_key => "drill",
       :swim_stroke_type_free_id => 6,
       :swim_stroke_type_free_key => "free",
+      :swim_equipment_type_fins_id => 1,
+      :swim_equipment_type_fins_key => "fins",
+      :swim_equipment_type_kickboard_id => 2,
+      :swim_equipment_type_kickboard_key => "kickboard",
       :swim_equipment_type_paddles_id => 3,
       :swim_equipment_type_paddles_key => "paddles",
+      :swim_equipment_type_pullbuoy_id => 4,
+      :swim_equipment_type_pullbuoy_key => "pull_buoy",
+      :swim_equipment_type_snorkel_id => 5,
+      :swim_equipment_type_snorkel_key => "snorkel"
     }
   end
 end
