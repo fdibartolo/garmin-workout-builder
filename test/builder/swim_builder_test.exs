@@ -37,4 +37,12 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
       |> List.first |> Map.fetch!(:workoutSteps)
     assert steps |> List.first |> Map.fetch!(:strokeType) |> Map.fetch!(:strokeTypeId) == 4
   end
+
+  test "should include cooldown step given any stroke details", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "cooldown", stroke: "any", endConditionValue: 200}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+      assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "cooldown"
+      assert steps |> List.first |> Map.fetch!(:strokeType) |> Map.fetch!(:strokeTypeKey) == "any_stroke"
+      assert steps |> List.first |> Map.fetch!(:endConditionValue) == 200
+    end
 end
