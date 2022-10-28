@@ -12,13 +12,14 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     end
   end
 
-  defp build_stroke_type_for("free"), do: %GarminWorkoutBuilder.SwimModel.StrokeType{
-    strokeTypeId: @constants.swim_stroke_type_free_id, strokeTypeKey: @constants.swim_stroke_type_free_key}
-  defp build_stroke_type_for("drill"), do: %GarminWorkoutBuilder.SwimModel.StrokeType{
-    strokeTypeId: @constants.swim_stroke_type_drill_id, strokeTypeKey: @constants.swim_stroke_type_drill_key}
-  defp build_stroke_type_for("any"), do: %GarminWorkoutBuilder.SwimModel.StrokeType{
-    strokeTypeId: @constants.swim_stroke_type_any_id, strokeTypeKey: @constants.swim_stroke_type_any_key}
-  defp build_stroke_type_for(_), do: %GarminWorkoutBuilder.SwimModel.StrokeType{}
+  defp build_stroke_type_for(type) do
+    stroke = case type do
+      "drill" -> {@constants.swim_stroke_type_drill_id, @constants.swim_stroke_type_drill_key}
+      "any" -> {@constants.swim_stroke_type_any_id, @constants.swim_stroke_type_any_key}
+      _ -> {@constants.swim_stroke_type_free_id, @constants.swim_stroke_type_free_key} # free for default
+    end
+    %GarminWorkoutBuilder.SwimModel.StrokeType{strokeTypeId: elem(stroke, 0), strokeTypeKey: elem(stroke, 1)}
+  end
 
   defp build_step_type_for("warmup"), do: %GarminWorkoutBuilder.SwimModel.RegularStepType{
     stepTypeId: @constants.swim_step_type_warmup_id, stepTypeKey: @constants.swim_step_type_warmup_key}
