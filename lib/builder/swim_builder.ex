@@ -33,6 +33,14 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     %GarminWorkoutBuilder.SwimModel.EquipmentType{equipmentTypeId: elem(equip, 0), equipmentTypeKey: elem(equip, 1)}
   end
 
+  defp build_end_condition_type_for(type) do
+    rest = case type do
+      "fixed" -> {@constants.swim_condition_fixed_rest_id, @constants.swim_condition_fixed_rest_key}
+      _ -> {@constants.swim_condition_lap_button_id, @constants.swim_condition_lap_button_key} # lap button for default
+    end
+    %GarminWorkoutBuilder.SwimModel.RestEndCondition{conditionTypeId: elem(rest, 0), conditionTypeKey: elem(rest, 1)}
+  end
+
   defp build_step_type_for("warmup"), do: %GarminWorkoutBuilder.SwimModel.RegularStepType{
     stepTypeId: @constants.swim_step_type_warmup_id, stepTypeKey: @constants.swim_step_type_warmup_key}
   defp build_step_type_for("cooldown"), do: %GarminWorkoutBuilder.SwimModel.RegularStepType{
@@ -47,6 +55,13 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
       equipmentType: build_equipment_type_for(data |> extract_field(:element)),
       endConditionValue: data |> extract_field(:endConditionValue),
       description: data |> extract_field(:description)
+    }
+  end
+
+  defp build_workout_step_for("rest", data) do
+    %GarminWorkoutBuilder.SwimModel.RestWorkoutStep{
+      endCondition: build_end_condition_type_for(data |> extract_field(:endCondition)),
+      endConditionValue: data |> extract_field(:endConditionValue)
     }
   end
 

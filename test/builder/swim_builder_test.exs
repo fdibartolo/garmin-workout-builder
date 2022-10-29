@@ -67,4 +67,19 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
       assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
       assert steps |> List.first |> Map.fetch!(:equipmentType) |> Map.fetch!(:equipmentTypeKey) == "pull_buoy"
   end
+
+  test "should include rest step with lap button", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "rest", endCondition: "lap.button"}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+      assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+      assert steps |> List.first |> Map.fetch!(:endCondition) |> Map.fetch!(:conditionTypeKey) == "lap.button"
+  end
+
+  test "should include rest step with fixed time", context do
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for([context.metadata, %{type: "rest", endCondition: "fixed", endConditionValue: 30}]).workoutSegments
+      |> List.first |> Map.fetch!(:workoutSteps)
+      assert steps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+      assert steps |> List.first |> Map.fetch!(:endCondition) |> Map.fetch!(:conditionTypeKey) == "fixed.rest"
+      assert steps |> List.first |> Map.fetch!(:endConditionValue) == 30
+  end
 end
