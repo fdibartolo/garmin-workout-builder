@@ -65,6 +65,15 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     }
   end
 
+  defp build_workout_step_for("repeat", data) do
+    workout_steps = build_for(data.steps, [])
+    %GarminWorkoutBuilder.SwimModel.RepeatWorkoutStep{
+      numberOfIterations: data |> extract_field(:numberOfIterations),
+      endConditionValue: data |> extract_field(:numberOfIterations),
+      workoutSteps: workout_steps
+    }
+  end
+
   defp build_for([], acc), do: acc |> List.flatten
   defp build_for([step|steps], acc) do
     workout_step = build_workout_step_for(step.type, step)

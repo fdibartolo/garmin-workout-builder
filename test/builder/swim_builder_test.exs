@@ -99,4 +99,50 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
     assert interval.strokeType.strokeTypeKey == "free" # free by default
     assert interval.equipmentType.equipmentTypeKey == "pull_buoy"
   end
+
+  test "should include interval step within a repeat step", context do
+    list = [
+      context.metadata,
+      %{type: "repeat", numberOfIterations: 8, steps: [
+        %{type: "interval", endConditionValue: 50, stroke: "drill"},
+        %{type: "rest", endCondition: "fixed", endConditionValue: 10}
+      ]}
+    ]
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for(list).workoutSegments |> List.first |> Map.fetch!(:workoutSteps)
+    assert steps |> Enum.count == 1
+    repeat_step = steps |> List.first
+    assert repeat_step.stepType.stepTypeKey == "repeat"
+    assert repeat_step.numberOfIterations == 8
+    assert repeat_step.workoutSteps |> Enum.count == 2
+    assert repeat_step.workoutSteps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+    assert repeat_step.workoutSteps |> List.last |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+  end
+
+  test "should include interval step within a repeat step, within another repeat step", context do
+    list = [
+      context.metadata,
+      %{type: "repeat", numberOfIterations: 3, steps: [
+        %{type: "repeat", numberOfIterations: 8, steps: [
+          %{type: "interval", endConditionValue: 50, stroke: "drill"},
+          %{type: "rest", endCondition: "fixed", endConditionValue: 10}
+        ]},
+        %{type: "rest", endCondition: "fixed", endConditionValue: 60}
+      ]}
+    ]
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for(list).workoutSegments |> List.first |> Map.fetch!(:workoutSteps)
+    assert steps |> Enum.count == 1
+    first_repeat_step = steps |> List.first
+    assert first_repeat_step.stepType.stepTypeKey == "repeat"
+    assert first_repeat_step.numberOfIterations == 3
+    assert first_repeat_step.workoutSteps |> Enum.count == 2
+    assert first_repeat_step.workoutSteps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "repeat"
+    assert first_repeat_step.workoutSteps |> List.last |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert first_repeat_step.workoutSteps |> List.last |> Map.fetch!(:endConditionValue) == 60
+    second_repeat_step = first_repeat_step.workoutSteps |> List.first
+    assert second_repeat_step.numberOfIterations == 8
+    assert second_repeat_step.workoutSteps |> Enum.count == 2
+    assert second_repeat_step.workoutSteps |> List.first |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+    assert second_repeat_step.workoutSteps |> List.last |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert second_repeat_step.workoutSteps |> List.last |> Map.fetch!(:endConditionValue) == 10
+  end
 end
