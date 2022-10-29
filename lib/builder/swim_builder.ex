@@ -65,17 +65,17 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     }
   end
 
-  def build_for([], acc), do: acc
-  def build_for([step|steps], acc) do
+  defp build_for([], acc), do: acc |> List.flatten
+  defp build_for([step|steps], acc) do
     workout_step = build_workout_step_for(step.type, step)
-    build_for(steps, acc ++ workout_step)
+    build_for(steps, acc ++ [workout_step])
   end
   def build_for([step|steps]) do
     root = %GarminWorkoutBuilder.SwimModel{}
     root = %{root | workoutName: step.workoutName} # should actually check if it is the metadata step, first one of the list
     workout_steps = build_for(steps, [])
 
-    segments = %GarminWorkoutBuilder.SwimModel.WorkoutSegment{workoutSteps: [workout_steps]}
+    segments = %GarminWorkoutBuilder.SwimModel.WorkoutSegment{workoutSteps: workout_steps}
     %{root | workoutSegments: [segments]}
   end
 end

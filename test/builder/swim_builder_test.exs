@@ -82,4 +82,21 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
       assert steps |> List.first |> Map.fetch!(:endCondition) |> Map.fetch!(:conditionTypeKey) == "fixed.rest"
       assert steps |> List.first |> Map.fetch!(:endConditionValue) == 30
   end
+
+  test "should combine full workout without repeats", context do
+    list = [
+      context.metadata,
+      %{type: "warmup", endConditionValue: 400, description: "easy", element: "SNKL"},
+      %{type: "rest", endCondition: "fixed", endConditionValue: 40},
+      %{type: "interval", endConditionValue: 800, element: "PB"},
+      %{type: "rest", endCondition: "lap.button"},
+      %{type: "cooldown", stroke: "any", endConditionValue: 100, element: "FINS"}
+    ]
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for(list).workoutSegments |> List.first |> Map.fetch!(:workoutSteps)
+    assert steps |> Enum.count == 5
+    interval = Enum.find(steps, fn s -> s.stepType.stepTypeKey == "interval" end)
+    assert interval.endConditionValue == 800
+    assert interval.strokeType.strokeTypeKey == "free" # free by default
+    assert interval.equipmentType.equipmentTypeKey == "pull_buoy"
+  end
 end
