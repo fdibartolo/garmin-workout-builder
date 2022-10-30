@@ -48,8 +48,9 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
   defp build_step_type_for("interval"), do: %GarminWorkoutBuilder.SwimModel.RegularStepType{
     stepTypeId: @constants.swim_step_type_interval_id, stepTypeKey: @constants.swim_step_type_interval_key}
 
-  defp build_workout_step_for(type, data) when type in ~w(warmup cooldown interval) do
+  defp build_workout_step_for(type, data, order) when type in ~w(warmup cooldown interval) do
     %GarminWorkoutBuilder.SwimModel.RegularWorkoutStep{
+      stepOrder: order,
       stepType: build_step_type_for(type),
       strokeType: build_stroke_type_for(data |> extract_field(:stroke)),
       equipmentType: build_equipment_type_for(data |> extract_field(:element)),
@@ -58,16 +59,18 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
     }
   end
 
-  defp build_workout_step_for("rest", data) do
+  defp build_workout_step_for("rest", data, order) do
     %GarminWorkoutBuilder.SwimModel.RestWorkoutStep{
+      stepOrder: order,
       endCondition: build_end_condition_type_for(data |> extract_field(:endCondition)),
       endConditionValue: data |> extract_field(:endConditionValue)
     }
   end
 
-  defp build_workout_step_for("repeat", data) do
+  defp build_workout_step_for("repeat", data, order) do
     workout_steps = build_for(data.steps, [])
     %GarminWorkoutBuilder.SwimModel.RepeatWorkoutStep{
+      stepOrder: order,
       numberOfIterations: data |> extract_field(:numberOfIterations),
       endConditionValue: data |> extract_field(:numberOfIterations),
       workoutSteps: workout_steps
@@ -76,7 +79,7 @@ defmodule GarminWorkoutBuilder.SwimBuilder do
 
   defp build_for([], acc), do: acc |> List.flatten
   defp build_for([step|steps], acc) do
-    workout_step = build_workout_step_for(step.type, step)
+    workout_step = build_workout_step_for(step.type, step, Enum.count(acc) + 1)
     build_for(steps, acc ++ [workout_step])
   end
   def build_for([step|steps]) do

@@ -145,4 +145,53 @@ defmodule GarminWorkoutBuilder.SwimBuilderTest do
     assert second_repeat_step.workoutSteps |> List.last |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
     assert second_repeat_step.workoutSteps |> List.last |> Map.fetch!(:endConditionValue) == 10
   end
+
+  test "should combine full workout with nested repeats with step order", context do
+    list = [
+      context.metadata,
+      %{type: "warmup", endConditionValue: 400},
+      %{type: "rest", endCondition: "lap.button"},
+      %{type: "repeat", numberOfIterations: 3, steps: [
+        %{type: "repeat", numberOfIterations: 8, steps: [
+          %{type: "interval", endConditionValue: 50, stroke: "drill", element: "SNKL"},
+          %{type: "rest", endCondition: "fixed", endConditionValue: 10}
+        ]},
+        %{type: "rest", endCondition: "fixed", endConditionValue: 60}
+      ]},
+      %{type: "rest", endCondition: "lap.button"},
+      %{type: "interval", endConditionValue: 1000, description: "easy", element: "PB"},
+      %{type: "rest", endCondition: "lap.button"},
+      %{type: "cooldown", stroke: "any", endConditionValue: 200}
+    ]
+    steps = GarminWorkoutBuilder.SwimBuilder.build_for(list).workoutSegments |> List.first |> Map.fetch!(:workoutSteps)
+    assert steps |> Enum.count == 7
+    assert steps |> Enum.at(0) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "warmup"
+    assert steps |> Enum.at(0) |> Map.fetch!(:stepOrder) == 1
+    assert steps |> Enum.at(1) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert steps |> Enum.at(1) |> Map.fetch!(:stepOrder) == 2
+    assert steps |> Enum.at(2) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "repeat"
+    assert steps |> Enum.at(2) |> Map.fetch!(:stepOrder) == 3
+    assert steps |> Enum.at(3) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert steps |> Enum.at(3) |> Map.fetch!(:stepOrder) == 4
+    assert steps |> Enum.at(4) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+    assert steps |> Enum.at(4) |> Map.fetch!(:stepOrder) == 5
+    assert steps |> Enum.at(5) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert steps |> Enum.at(5) |> Map.fetch!(:stepOrder) == 6
+    assert steps |> Enum.at(6) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "cooldown"
+    assert steps |> Enum.at(6) |> Map.fetch!(:stepOrder) == 7
+
+    first_repeat_step = steps |> Enum.at(2) |> Map.fetch!(:workoutSteps)
+    assert first_repeat_step |> Enum.count == 2
+    assert first_repeat_step |> Enum.at(0) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "repeat"
+    assert first_repeat_step |> Enum.at(0) |> Map.fetch!(:stepOrder) == 1
+    assert first_repeat_step |> Enum.at(1) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert first_repeat_step |> Enum.at(1) |> Map.fetch!(:stepOrder) == 2
+
+    second_repeat_step = first_repeat_step |> Enum.at(0) |> Map.fetch!(:workoutSteps)
+    assert second_repeat_step |> Enum.count == 2
+    assert second_repeat_step |> Enum.at(0) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "interval"
+    assert second_repeat_step |> Enum.at(0) |> Map.fetch!(:stepOrder) == 1
+    assert second_repeat_step |> Enum.at(1) |> Map.fetch!(:stepType) |> Map.fetch!(:stepTypeKey) == "rest"
+    assert second_repeat_step |> Enum.at(1) |> Map.fetch!(:stepOrder) == 2
+  end
 end
