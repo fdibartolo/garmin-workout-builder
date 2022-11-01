@@ -6,7 +6,7 @@ defmodule GarminWorkoutBuilder.Constants do
     %{
       :metadata_regex => ~r<T\d+P\d+S\d+D[1-7]>,
       :swim_warmup_regex => ~r<\d+ e/c>,
-      :single_swim_repeat_regex => ~r/\d+x\(\d+\s\[\d+''\]\)/,
+      :swim_repeat_regex => ~r/\d+x\(.*?\[\d+''\]\)/,
       :swim_elements_regex => ~r<(PB|MP|SNKL|FINS|TAB)>,
       :swim_description_regex => ~r/\<.*?\>/,
       :swim_stroke_regex => ~r<(free|drill|any)>,

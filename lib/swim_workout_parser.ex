@@ -6,7 +6,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   def swim_warmup?(wo), do: wo |> String.match?(@constants.swim_warmup_regex)
 
-  def single_swim_repeat?(wo), do: wo |> String.match?(@constants.single_swim_repeat_regex)
+  def swim_repeat?(wo), do: wo |> String.match?(@constants.swim_repeat_regex)
 
   defp parse_warmup_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
 
