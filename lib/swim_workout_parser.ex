@@ -16,7 +16,8 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
   defp parse_extra_details({step, details}) do
     list = [
       element: @constants.swim_elements_regex,
-      description: @constants.swim_description_regex
+      description: @constants.swim_description_regex,
+      stroke: @constants.swim_stroke_regex
     ]
       |> Enum.map(fn {k,v} -> if (String.match?(step, v)), do: %{k => Regex.run(v, step) |> List.first |> cleanup(k)} end)
       |> Enum.reject(&(&1 == nil))

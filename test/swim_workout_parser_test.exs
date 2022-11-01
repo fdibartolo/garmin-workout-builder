@@ -5,6 +5,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
   @swim_warmup "400 e/c"
   @swim_elements "MP"
   @swim_step_description "<prog>"
+  @swim_stroke "drill"
   @single_swim_repeat "15x(100 [20''])"
   @double_swim_repeat "15x(100 75 [20''])"
 
@@ -31,6 +32,11 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
     test "should create list with warmup info and description" do
       assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} #{@swim_step_description}"]) ==
         [%{type: "warmup", endConditionValue: 400, description: "prog"}]
+    end
+
+    test "should create list with warmup info and stroke type" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} #{@swim_stroke}"]) ==
+        [%{type: "warmup", endConditionValue: 400, stroke: "drill"}]
     end
   end
 
