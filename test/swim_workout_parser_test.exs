@@ -27,6 +27,11 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
       assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} #{@swim_elements}"]) ==
         [%{type: "warmup", endConditionValue: 400, element: "MP"}]
     end
+
+    test "should create list with warmup info and description" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} #{@swim_step_description}"]) ==
+        [%{type: "warmup", endConditionValue: 400, description: "prog"}]
+    end
   end
 
   describe "metadata?" do

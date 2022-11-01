@@ -10,19 +10,25 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   defp parse_warmup_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
 
-  defp parse_element_details({step, details}) do
-    cond do
-      step |> String.match?(@constants.swim_elements_regex) ->
-        {step, Map.merge(details, %{element: Regex.run(@constants.swim_elements_regex, step) |> List.first})}
-      true -> {step, details}
-    end
+  defp cleanup(value, :description), do: String.slice(value, 1..-2)
+  defp cleanup(value, _key), do: value
+
+  defp parse_extra_details({step, details}) do
+    list = [
+      element: @constants.swim_elements_regex,
+      description: @constants.swim_description_regex
+    ]
+      |> Enum.map(fn {k,v} -> if (String.match?(step, v)), do: %{k => Regex.run(v, step) |> List.first |> cleanup(k)} end)
+      |> Enum.reject(&(&1 == nil))
+
+    unless Enum.empty?(list), do: list |> Enum.reduce(&(Map.merge(&1,&2))) |> Map.merge(details), else: details
   end
 
   defp parse([], acc), do: acc |> List.flatten
   defp parse([step|steps], acc) do
     encoded_step = cond do
       step |> metadata? -> %{type: "metadata", workoutName: step}
-      step |> swim_warmup? -> Map.merge(%{type: "warmup"}, step |> parse_warmup_details |> parse_element_details |> elem(1))
+      step |> swim_warmup? -> Map.merge(%{type: "warmup"}, step |> parse_warmup_details |> parse_extra_details)
       true -> raise ArgumentError, message: "invalid step, not being able to get parsed correctly"
     end
     parse(steps, acc ++ [encoded_step])
