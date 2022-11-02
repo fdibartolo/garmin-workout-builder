@@ -10,9 +10,19 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   defp single_swim?(step), do: step |> String.match?(@constants.single_swim_regex)
 
+  defp fixed_rest?(step), do: step |> String.match?(@constants.swim_rest_regex)
+
   defp parse_distance_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
 
-  defp parse_repeat_details(step), do: %{numberOfIterations: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer, steps: []}
+  defp parse_rest_details(step), do: %{endConditionValue: step |> String.trim_trailing("'") |> String.to_integer}
+
+  defp parse_repeat_details(step) do
+    intervals = Regex.run(~r<\(.*?\[>, step) |> List.first |> String.slice(1..-2) |> String.split
+    rest = Regex.run(~r<\d+''>, step) |> List.first
+    raw_steps = intervals |> Enum.join(" #{rest} ") |> String.split |> List.insert_at(-1,rest)
+
+    %{numberOfIterations: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer, steps: raw_steps |> parse}
+  end
 
   defp cleanup(value, :description), do: String.slice(value, 1..-2)
   defp cleanup(value, _key), do: value
@@ -35,6 +45,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
       step |> metadata? -> %{type: "metadata", workoutName: step}
       step |> swim_warmup? -> Map.merge(%{type: "warmup"}, step |> parse_distance_details |> parse_extra_details)
       step |> swim_repeat? -> Map.merge(%{type: "repeat"}, step |> parse_repeat_details)
+      step |> fixed_rest? -> Map.merge(%{type: "rest", endCondition: "fixed"}, step |> parse_rest_details)
       step |> single_swim? -> Map.merge(%{type: "interval"}, step |> parse_distance_details |> parse_extra_details)
       true -> raise ArgumentError, message: "invalid step, not being able to get parsed correctly"
     end

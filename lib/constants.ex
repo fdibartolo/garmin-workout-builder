@@ -8,6 +8,7 @@ defmodule GarminWorkoutBuilder.Constants do
       :swim_warmup_regex => ~r<\d+ e/c>,
       :swim_repeat_regex => ~r/\d+x\(.*?\[\d+''\]\)/,
       :single_swim_regex => ~r<\d+>,
+      :swim_rest_regex => ~r<\d+''>,
       :swim_elements_regex => ~r<(PB|MP|SNKL|FINS|TAB)>,
       :swim_description_regex => ~r/\<.*?\>/,
       :swim_stroke_regex => ~r<(free|drill|any)>,
