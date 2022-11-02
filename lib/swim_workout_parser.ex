@@ -16,12 +16,19 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   defp parse_rest_details(step), do: %{endConditionValue: step |> String.trim_trailing("'") |> String.to_integer}
 
+  defp add_repeat_extra_details_to_intervals(steps, details), do:
+    Enum.map(steps, &(if (fixed_rest?(&1)), do: &1, else: "#{&1} #{details}"))
+
   defp parse_repeat_details(step) do
     intervals = Regex.run(~r<\(.*?\[>, step) |> List.first |> String.slice(1..-2) |> String.split
     rest = Regex.run(~r<\d+''>, step) |> List.first
+    extra_details = step |> String.trim_leading(Regex.run(@constants.swim_repeat_regex, step) |> List.first)
     raw_steps = intervals |> Enum.join(" #{rest} ") |> String.split |> List.insert_at(-1,rest)
 
-    %{numberOfIterations: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer, steps: raw_steps |> parse}
+    %{
+      numberOfIterations: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer,
+      steps: raw_steps |> add_repeat_extra_details_to_intervals(extra_details) |> parse
+    }
   end
 
   defp cleanup(value, :description), do: String.slice(value, 1..-2)

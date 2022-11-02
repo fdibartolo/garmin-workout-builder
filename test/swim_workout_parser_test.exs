@@ -63,6 +63,14 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
           %{type: "interval", endConditionValue: 75}, %{type: "rest", endCondition: "fixed", endConditionValue: 20}
         ]}]
     end
+
+    test "should create list with double repeat info along with elements and descrition details" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@double_swim_repeat} #{@swim_elements} #{@swim_step_description}"]) == [
+        %{type: "repeat", numberOfIterations: 15, steps: [
+          %{type: "interval", endConditionValue: 100, description: "prog", element: "MP"}, %{type: "rest", endCondition: "fixed", endConditionValue: 20},
+          %{type: "interval", endConditionValue: 75, description: "prog", element: "MP"}, %{type: "rest", endCondition: "fixed", endConditionValue: 20}
+        ]}]
+    end
   end
 
   describe "metadata?" do
