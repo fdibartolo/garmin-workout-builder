@@ -4,9 +4,11 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   def metadata?(step), do: step |> String.match?(@constants.metadata_regex)
 
+  def swim_repeat?(step), do: step |> String.match?(@constants.swim_repeat_regex)
+
   def swim_warmup?(step), do: step |> String.match?(@constants.swim_warmup_regex)
 
-  def swim_repeat?(step), do: step |> String.match?(@constants.swim_repeat_regex)
+  defp swim_cooldown?(step), do: step |> String.match?(@constants.swim_cooldown_regex)
 
   defp single_swim?(step), do: step |> String.match?(@constants.single_swim_regex)
 
@@ -51,6 +53,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
     encoded_step = cond do
       step |> metadata? -> %{type: "metadata", workoutName: step}
       step |> swim_warmup? -> Map.merge(%{type: "warmup"}, step |> parse_distance_details |> parse_extra_details)
+      step |> swim_cooldown? -> Map.merge(%{type: "cooldown"}, step |> parse_distance_details |> parse_extra_details)
       step |> swim_repeat? -> Map.merge(%{type: "repeat"}, step |> parse_repeat_details)
       step |> fixed_rest? -> Map.merge(%{type: "rest", endCondition: "fixed"}, step |> parse_rest_details)
       step |> single_swim? -> Map.merge(%{type: "interval"}, step |> parse_distance_details |> parse_extra_details)

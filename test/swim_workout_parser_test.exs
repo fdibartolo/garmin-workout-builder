@@ -3,6 +3,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
 
   @metadata "T3P2S1D7"
   @swim_warmup "400 e/c"
+  @swim_cooldown "200 v/c"
   @swim_elements "MP"
   @swim_step_description "<prog>"
   @swim_stroke "drill"
@@ -38,6 +39,11 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
     test "should create list with warmup info and stroke type" do
       assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} #{@swim_stroke}"]) ==
         [%{type: "warmup", endConditionValue: 400, stroke: "drill"}]
+    end
+
+    test "should create list with cooldown info and stroke type" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_cooldown} any FINS"]) ==
+        [%{type: "cooldown", endConditionValue: 200, stroke: "any", element: "FINS"}]
     end
 
     test "should create list with interval info" do
