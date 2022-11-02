@@ -38,6 +38,13 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
       assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} #{@swim_stroke}"]) ==
         [%{type: "warmup", endConditionValue: 400, stroke: "drill"}]
     end
+
+    test "should create list with repeat info" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse([@single_swim_repeat]) == [
+        %{type: "repeat", numberOfIterations: 15, steps: [
+          %{type: "interval", endConditionValue: 100}, %{type: "rest", endCondition: "fixed", endConditionValue: 20}
+        ]}]
+    end
   end
 
   describe "metadata?" do
