@@ -10,9 +10,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   defp single_swim?(step), do: step |> String.match?(@constants.single_swim_regex)
 
-  defp parse_warmup_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
-
-  defp parse_interval_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
+  defp parse_distance_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
 
   defp cleanup(value, :description), do: String.slice(value, 1..-2)
   defp cleanup(value, _key), do: value
@@ -33,8 +31,8 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
   defp parse([step|steps], acc) do
     encoded_step = cond do
       step |> metadata? -> %{type: "metadata", workoutName: step}
-      step |> swim_warmup? -> Map.merge(%{type: "warmup"}, step |> parse_warmup_details |> parse_extra_details)
-      step |> single_swim? -> Map.merge(%{type: "interval"}, step |> parse_interval_details |> parse_extra_details)
+      step |> swim_warmup? -> Map.merge(%{type: "warmup"}, step |> parse_distance_details |> parse_extra_details)
+      step |> single_swim? -> Map.merge(%{type: "interval"}, step |> parse_distance_details |> parse_extra_details)
       true -> raise ArgumentError, message: "invalid step, not being able to get parsed correctly"
     end
     parse(steps, acc ++ [encoded_step])
