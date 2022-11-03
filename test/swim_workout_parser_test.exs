@@ -77,6 +77,34 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParserTest do
           %{type: "interval", endConditionValue: 75, description: "prog", element: "MP"}, %{type: "rest", endCondition: "fixed", endConditionValue: 20}
         ]}]
     end
+
+    test "should add lap button rest steps inbetween outer steps" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse([@swim_warmup, @single_swim_repeat, @single_swim, @swim_cooldown]) == [
+        %{type: "warmup", endConditionValue: 400},
+        %{type: "rest", endCondition: "lap.button"},
+        %{type: "repeat", numberOfIterations: 15, steps: [
+          %{type: "interval", endConditionValue: 100}, %{type: "rest", endCondition: "fixed", endConditionValue: 20}
+        ]},
+        %{type: "rest", endCondition: "lap.button"},
+        %{type: "interval", endConditionValue: 800},
+        %{type: "rest", endCondition: "lap.button"},
+        %{type: "cooldown", endConditionValue: 200}
+      ]
+    end
+
+    test "should combine all diferent step types and details" do
+      assert GarminWorkoutBuilder.SwimWorkoutParser.parse(["#{@swim_warmup} SNKL", "#{@single_swim_repeat} drill <25 1br 75 full>", "#{@single_swim} PB <atado>", "#{@swim_cooldown} any"]) == [
+        %{type: "warmup", endConditionValue: 400, element: "SNKL"},
+        %{type: "rest", endCondition: "lap.button"},
+        %{type: "repeat", numberOfIterations: 15, steps: [
+          %{type: "interval", endConditionValue: 100, description: "25 1br 75 full", stroke: "drill"}, %{type: "rest", endCondition: "fixed", endConditionValue: 20}
+        ]},
+        %{type: "rest", endCondition: "lap.button"},
+        %{type: "interval", endConditionValue: 800, element: "PB", description: "atado"},
+        %{type: "rest", endCondition: "lap.button"},
+        %{type: "cooldown", endConditionValue: 200, stroke: "any"}
+      ]
+    end
   end
 
   describe "metadata?" do

@@ -14,6 +14,9 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
   defp fixed_rest?(step), do: step |> String.match?(@constants.swim_rest_regex)
 
+  defp lap_button_rest?("lap_button_rest"), do: :true
+  defp lap_button_rest?(_), do: :false
+
   defp parse_distance_details(step), do: {step, %{endConditionValue: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer}}
 
   defp parse_rest_details(step), do: %{endConditionValue: step |> String.trim_trailing("'") |> String.to_integer}
@@ -29,7 +32,7 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
 
     %{
       numberOfIterations: Regex.run(~r<\d+>, step) |> List.first |> String.to_integer,
-      steps: raw_steps |> add_repeat_extra_details_to_intervals(extra_details) |> parse
+      steps: raw_steps |> add_repeat_extra_details_to_intervals(extra_details) |> parse([])
     }
   end
 
@@ -56,11 +59,13 @@ defmodule GarminWorkoutBuilder.SwimWorkoutParser do
       step |> swim_cooldown? -> Map.merge(%{type: "cooldown"}, step |> parse_distance_details |> parse_extra_details)
       step |> swim_repeat? -> Map.merge(%{type: "repeat"}, step |> parse_repeat_details)
       step |> fixed_rest? -> Map.merge(%{type: "rest", endCondition: "fixed"}, step |> parse_rest_details)
+      step |> lap_button_rest? -> %{type: "rest", endCondition: "lap.button"}
       step |> single_swim? -> Map.merge(%{type: "interval"}, step |> parse_distance_details |> parse_extra_details)
       true -> raise ArgumentError, message: "invalid step, not being able to get parsed correctly"
     end
     parse(steps, acc ++ [encoded_step])
   end
 
-  def parse(steps), do: parse(steps, [])
+  defp add_lap_button_rest_for(steps), do: steps |> Enum.join(",lap_button_rest,") |> String.split(",")
+  def parse(steps), do: parse(steps |> add_lap_button_rest_for, [])
 end
