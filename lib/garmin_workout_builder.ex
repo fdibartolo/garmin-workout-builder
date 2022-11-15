@@ -3,16 +3,10 @@ defmodule GarminWorkoutBuilder do
   Builds workouts for Garmin Connect portal
   """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> GarminWorkoutBuilder.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def process(steps) do
+    steps
+    |> GarminWorkoutBuilder.SwimWorkoutParser.parse
+    |> GarminWorkoutBuilder.SwimBuilder.build_for
+    |> Poison.encode!
   end
 end
