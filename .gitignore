@@ -22,3 +22,5 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 garmin_workout_builder-*.tar
 
+# local notes
+aux_notes.txt
